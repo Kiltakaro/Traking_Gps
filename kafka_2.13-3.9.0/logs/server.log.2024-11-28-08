@@ -1,0 +1,3 @@
+[2024-11-28 08:59:00,112] INFO [GroupCoordinator 1]: Member kafka-python-2.0.2-c081237b-f388-4d3e-a51a-32eeb5f989be in group fastapi_consumer_group has failed, removing it from the group (kafka.coordinator.group.GroupCoordinator)
+[2024-11-28 08:59:00,112] INFO [GroupCoordinator 1]: Preparing to rebalance group fastapi_consumer_group in state PreparingRebalance with old generation 15 (__consumer_offsets-1) (reason: removing member kafka-python-2.0.2-c081237b-f388-4d3e-a51a-32eeb5f989be on heartbeat expiration) (kafka.coordinator.group.GroupCoordinator)
+[2024-11-28 08:59:00,112] INFO [GroupCoordinator 1]: Group fastapi_consumer_group with generation 16 is now empty (__consumer_offsets-1) (kafka.coordinator.group.GroupCoordinator)

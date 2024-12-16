@@ -1,0 +1,6 @@
+Faire en sorte que : pas besoin de recharger la page pour update le pointeur
+Ajouter une 2eme personne dans le pointeur 
+Dockeriser
+Faire en sorte que ce soit "2 machines" ?
+Passer sous postgresql si vous préférez (utiliser express)
+Utiliser un framework pour le front ? Css ?

@@ -1,5 +1,6 @@
+import asyncio
 import logging
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from kafka import KafkaConsumer
 import json
@@ -48,7 +49,7 @@ cursor = db_connection.cursor()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello world"}
+    return {"message": "Hello world ça marche"}
 
 #commenter sur la variable
 def consume_messages(consumer_group):
@@ -77,7 +78,7 @@ def consume_messages(consumer_group):
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
-# DEPRECIATED a refaire mais pour ce qu'onn fait ça suffira
+# DEPRECIATED  mais pour ce qu'on fait ça suffira
 # Peut etre dupliquer le thread pour consumer 2 
 @app.on_event("startup")
 async def startup_event():
@@ -150,5 +151,60 @@ async def get_last_message_IP2():
     }
 
 
-# https://fastapi.tiangolo.com/advanced/websockets/#in-production
+# On pourrait rajouter un truc du style, si le derneir msg est le meme bah envoie pas de msg
+# ou si y'a un msg de consumé, go notifier le wwebsocket mais pour le moment je sais pas faire ça
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     while True:
+#         cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC LIMIT 1")
+#         last_msg = cursor.fetchone()
+#         if last_msg:
+#             message = {
+#                 "id": last_msg[0],
+#                 "IP": last_msg[1],
+#                 "latitude": last_msg[2],
+#                 "longitude": last_msg[3],
+#                 "messageDate": last_msg[4].isoformat()
+#             }
+#             await websocket.send_json(message)
+#         await asyncio.sleep(3)  # Attendre 5 secondes avant de vérifier à nouveau
 
+
+# Tentative double msg format
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+
+        ip = 1
+        cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
+        last_msg1 = cursor.fetchone()
+
+        ip = 2
+        cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
+        last_msg2 = cursor.fetchone()
+
+        if last_msg1 and last_msg2:
+            message = {
+                "IP1": last_msg1[1],
+                "latitudeIP1": last_msg1[2],
+                "longitudeIP1": last_msg1[3],
+                "messageDateIP1": last_msg1[4].isoformat(),
+                "IP2": last_msg2[1],
+                "latitudeIP2": last_msg2[2],
+                "longitudeIP2": last_msg2[3],
+                "messageDateIP2": last_msg2[4].isoformat()
+            }
+            await websocket.send_json(message)
+        await asyncio.sleep(3)  # Attendre 5 secondes avant de vérifier à nouveau
+
+
+# TUTO WEBSOCKET 
+# https://fastapi.tiangolo.com/advanced/websockets/#in-production
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     while True:
+#         data = await websocket.receive_text()
+#         await websocket.send_text(f"Message text was: {data}")

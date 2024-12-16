@@ -24,6 +24,15 @@
     <div id="message" style="margin-top: 20px; font-size: 16px;"></div>
 
 
+    <body>
+        <h1>WebSocket Chat</h1>
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" autocomplete="off"/>
+            <button>Send</button>
+        </form>
+        <ul id='messages'>
+        </ul>
+
     <!-- mettre a la fin sinon la map ne se charge pas -->
     <script src="script.js" type="text/javascript"></script>
 

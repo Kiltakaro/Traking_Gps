@@ -10,9 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
     
 
+    /////////////////// ICON IP 1 /////////////////////////
+
+
     // https://leafletjs.com/examples/custom-icons/
     // En gros faire icon puis faire le point sur la map
-    var marioIcon = L.icon({
+    var iconIp1 = L.icon({
         iconUrl: 'img/gaming.png',
         iconSize: [38, 95], 
         iconAnchor: [19, 47], // marker's location
@@ -20,15 +23,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Add marker with the icon
-    L.marker([48.8566, 2.3522], { icon: marioIcon }).addTo(map)
-        .bindPopup("I am a custom icon!")
-        .openPopup();
+    // L.marker([48.8566, 2.3522], { icon: iconIp1 }).addTo(map)
+    //     .bindPopup("I am IP1 icon!")
+    //     .openPopup();
+
+    /////////////////// ICON IP 2 /////////////////////////
+
+    var iconIp2 = L.icon({
+        iconUrl: 'img/ip2img.png',
+        iconSize: [38, 95], 
+        iconAnchor: [20, 48], // marker's location
+        popupAnchor: [-3, -76] // popup should open relative to the iconAnchor
+    });
 
 
+    // Go Axios psk j'aime pas fetch
+    async function fetchLastMessageAxiosIP1() {
+        const response = await axios.get('http://localhost:8000/messages/IP1/last');
+        console.log(response);
+        console.log(response.data);
+        return response.data;
+    }
 
-    // Axios psk Fetch me deteste
-    async function fetchLastMessageAxios() {
-        const response = await axios.get('http://localhost:8000/messages/last');
+    async function fetchLastMessageAxiosIP2() {
+        const response = await axios.get('http://localhost:8000/messages/IP2/last');
         console.log(response);
         console.log(response.data);
         return response.data;
@@ -46,18 +64,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Dupliquer pour IP2 et forcé celui ci sur IP1
-    async function displayLastMessage(){
-        const lastMessage = await fetchLastMessageAxios();
+    var markerIP1;
+    // ajouter de la gestion d'erreur
+    async function displayLastMessageIP1(){
+        const lastMessage = await fetchLastMessageAxiosIP1();
         if (lastMessage) {
-            L.marker([lastMessage.latitude, lastMessage.longitude], { icon: marioIcon }).addTo(map)
-            .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-            .openPopup();
+            markerIP1 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp1 }).addTo(map)
+                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
+                .openPopup();
         } else {
-            console.log("Aucun message disponible.");
+            console.log("IP1 Aucun message.");
+        }
+    }
+
+
+    var markerIP2;
+    // ajouter de la gestion d'erreur
+    async function displayLastMessageIP2(){
+        const lastMessage = await fetchLastMessageAxiosIP2();
+        if (lastMessage) {
+            markerIP2 = new L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp2 }).addTo(map)
+                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
+                .openPopup();
+        } else {
+            console.log("IP2 Aucun message.");
         }
     }
 
     printLastMessage();
-    displayLastMessage();
+    displayLastMessageIP1();
+    displayLastMessageIP2();
+
+    // setInterval(printLastMessage, 1000)
+    setInterval(displayLastMessageIP1, 5000);
+    setInterval(displayLastMessageIP2, 5000);
 });

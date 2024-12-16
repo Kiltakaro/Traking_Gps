@@ -1,6 +1,7 @@
 from kafka import KafkaConsumer
 import json
 
+# Inutile mtn
 
 # Initialiser le consommateur Kafka
 consumer = KafkaConsumer(

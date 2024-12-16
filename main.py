@@ -5,6 +5,8 @@ from kafka import KafkaConsumer
 import json
 from typing import List
 import mysql.connector
+import threading
+
 
 # Configuration de base du logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -48,7 +50,8 @@ cursor = db_connection.cursor()
 async def root():
     return {"message": "Hello world"}
 
-def consume_messages():
+#commenter sur la variable
+def consume_messages(consumer_group):
     """
     Consomme les messages de Kafka et les stocke dans la bdd mysql.
     """
@@ -57,7 +60,7 @@ def consume_messages():
         bootstrap_servers=[KAFKA_BROKER],
         auto_offset_reset='earliest',
         enable_auto_commit=True,
-        group_id='fastapi_consumer_group',
+        group_id=consumer_group,  # ajout de variable pour lire IP1 ou IP2 avec les thread
         value_deserializer=lambda x: json.loads(x.decode('utf-8'))
     )
     for message in consumer:
@@ -74,16 +77,20 @@ def consume_messages():
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
-
 # DEPRECIATED a refaire mais pour ce qu'onn fait ça suffira
+# Peut etre dupliquer le thread pour consumer 2 
 @app.on_event("startup")
 async def startup_event():
     """
     Démarre la consommation des messages Kafka au démarrage de l'application.
     """
-    import threading
-    consumer_thread = threading.Thread(target=consume_messages, daemon=True)
+    consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
     consumer_thread.start()
+    # consumer_thread1 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_1',), daemon=True)
+    # consumer_thread1.start()
+
+    # consumer_thread2 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_2',), daemon=True)
+    # consumer_thread2.start()
 
 
 # A FAIRE SI NECESSAIRE
@@ -96,21 +103,20 @@ async def get_messages():
 
 
 
-# A dedoubler sur 2 threads pour faire IP1 et IP2 en meem temps ? 
-@app.get("/messages/last")
-async def get_last_message():
+# A dedoubler sur 2 threads pour faire IP1 et IP2 en meme temps ? 
+@app.get("/messages/IP1/last")
+async def get_last_message_IP1():
     """
-    Récupère le dernier message consommé.
+    Récupère le dernier message d'IP1 consommé.
     """
-    ip = 1
-    cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
+    cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC LIMIT 1")
     last_msg = cursor.fetchone()
 
     if not last_msg:
         logging.info("Aucun message disponible.")
         return {"message": "Aucun message disponible."}
     
-    logging.info(f"Dernier message : {last_msg}")
+    # logging.info(f"Dernier message : {last_msg}")
     # return {last_msg}
     return {
         "id": last_msg[0],
@@ -119,3 +125,30 @@ async def get_last_message():
         "longitude": last_msg[3],
         "messageDate": last_msg[4].isoformat()  # Convertir datetime en string
     }
+
+
+@app.get("/messages/IP2/last")
+async def get_last_message_IP2():
+    """
+    Récupère le dernier message d'IP2 consommé.
+    """
+    ip = 2
+    cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
+    last_msg = cursor.fetchone()
+
+    if not last_msg:
+        logging.info("Aucun message disponible.")
+        return {"message": "Aucun message disponible."}
+    
+    # logging.info(f"Dernier message : {last_msg}")
+    return {
+        "id": last_msg[0],
+        "IP": last_msg[1],
+        "latitude": last_msg[2],
+        "longitude": last_msg[3],
+        "messageDate": last_msg[4].isoformat()  # Convertir datetime en string
+    }
+
+
+# https://fastapi.tiangolo.com/advanced/websockets/#in-production
+

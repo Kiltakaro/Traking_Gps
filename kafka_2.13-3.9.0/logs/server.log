@@ -841,3 +841,4 @@ java.lang.RuntimeException: No readable meta.properties files found.
 [2024-12-16 11:35:33,836] INFO [GroupCoordinator 1]: Member kafka-python-2.0.2-6476c63e-5e63-4363-b9a8-258b994b3f9e in group fastapi_consumer_group has failed, removing it from the group (kafka.coordinator.group.GroupCoordinator)
 [2024-12-16 11:35:33,837] INFO [GroupCoordinator 1]: Stabilized group fastapi_consumer_group generation 2 (__consumer_offsets-1) with 1 members (kafka.coordinator.group.GroupCoordinator)
 [2024-12-16 11:35:33,838] INFO [GroupCoordinator 1]: Assignment received from leader kafka-python-2.0.2-98e7d84c-4d62-49f6-8795-433b95bbcbe4 for group fastapi_consumer_group for generation 2. The group has 1 members, 0 of which are static. (kafka.coordinator.group.GroupCoordinator)
+[2024-12-16 11:39:46,141] INFO [NodeToControllerChannelManager id=1 name=registration] Node 1 disconnected. (org.apache.kafka.clients.NetworkClient)

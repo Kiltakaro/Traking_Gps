@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // https://leafletjs.com/examples/custom-icons/
     // En gros faire icon puis faire le point sur la map
     var iconIp1 = L.icon({
-        iconUrl: 'img/gaming.png',
+        iconUrl: 'static/img/ip1img.png',
         iconSize: [38, 95],
         iconAnchor: [19, 47], // marker's location
         popupAnchor: [-3, -76] // popup should open relative to the iconAnchor
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /////////////////// ICON IP 2 /////////////////////////
 
     var iconIp2 = L.icon({
-        iconUrl: 'img/ip2img.png',
+        iconUrl: 'static/img/ip2img.png',
         iconSize: [38, 95],
         iconAnchor: [20, 48], // marker's location
         popupAnchor: [-3, -76] // popup should open relative to the iconAnchor

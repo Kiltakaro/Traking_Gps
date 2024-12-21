@@ -2,11 +2,17 @@ import asyncio
 import logging
 from fastapi import FastAPI, BackgroundTasks, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from kafka import KafkaConsumer
 import json
 from typing import List
 import mysql.connector
 import threading
+from fastapi.responses import HTMLResponse
+
+import psycopg2
+
+
 
 
 # Configuration de base du logging
@@ -45,9 +51,33 @@ db_connection = mysql.connector.connect(
     database="Kafka_db"
 )
 
+# J'arrive pas a me co avec postgres
+# db_connection = psycopg2.connect(
+#     host="localhost",
+#     user="postgres_user",
+#     password="postgres_password",
+#     database="kafka_db"
+# )
+
+
 cursor = db_connection.cursor()
 
-@app.get("/")
+app = FastAPI()
+
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+
+# Normalement ça sert a rien mais je sais pas si le cache fait que ça marche alors que ça devrait pas
+# Monter le répertoire de fichiers statiques
+app.mount("/static", StaticFiles(directory="Front"), name="static")
+
+templates = Jinja2Templates(directory="Front")
+
+@app.get('/')
+def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/hello")
 async def root():
     return {"message": "Hello world ça marche"}
 
@@ -95,6 +125,7 @@ async def startup_event():
 
 
 # A FAIRE SI NECESSAIRE
+# ou si ça vous amuse, perso j'ai la flemme d'écrire ces 4 lignes 
 @app.get("/messages")
 async def get_messages():
     """

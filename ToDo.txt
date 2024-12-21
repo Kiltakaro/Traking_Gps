@@ -1,6 +1,6 @@
-Faire en sorte que : pas besoin de recharger la page pour update le pointeur
-Ajouter une 2eme personne dans le pointeur 
 Dockeriser
-Faire en sorte que ce soit "2 machines" ?
-Passer sous postgresql si vous préférez (utiliser express)
-Utiliser un framework pour le front ? Css ?
+Faire en sorte que ce soit "2 machines physique qui soient les producers" ?
+Passer sous postgresql si vous préférez (psycopg2) mais j'arrive pas a le mettre en place en local, peut etre qu'avec docker ?
+Utiliser un framework pour le front ? Sinon faire un super css ? Avoir un serveur pour le front ?
+Comment relancer un kafka une fois qu'on a plus le random uuid ? (psk la on est forcé d'en créer un nouveau a chaque fois qu'on relance le pc)
+augmenter le nombre de messages (déplacement) des producers et en faire des plus randoms/logique

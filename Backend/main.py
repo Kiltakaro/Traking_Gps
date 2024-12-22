@@ -6,12 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from kafka import KafkaConsumer
 import json
 from typing import List
-import mysql.connector
+# import mysql.connector
 import threading
 from fastapi.responses import HTMLResponse
 
 import psycopg2
-
 
 
 
@@ -73,6 +72,7 @@ app.mount("/static", StaticFiles(directory="Front"), name="static")
 
 templates = Jinja2Templates(directory="Front")
 
+
 @app.get('/')
 def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -103,20 +103,26 @@ def consume_messages(consumer_group):
             cursor.execute(sql, val)
             db_connection.commit()
             logging.info(f"{cursor.rowcount} record inserted")
-        except mysql.connector.Error as err:
+        # except mysql.connector.Error as err:
+        except psycopg2.connect.Error as err:
             logging.error(f"Erreur MySQL: {err}")
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
+
+
+consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
+consumer_thread.start()
+
 # DEPRECIATED  mais pour ce qu'on fait ça suffira
 # Peut etre dupliquer le thread pour consumer 2 
-@app.on_event("startup")
-async def startup_event():
-    """
-    Démarre la consommation des messages Kafka au démarrage de l'application.
-    """
-    consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
-    consumer_thread.start()
+# @app.on_event("startup")
+# async def startup_event():
+#     """
+#     Démarre la consommation des messages Kafka au démarrage de l'application.
+#     """
+#     consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
+#     consumer_thread.start()
     # consumer_thread1 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_1',), daemon=True)
     # consumer_thread1.start()
 

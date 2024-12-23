@@ -55,7 +55,7 @@ db_connection = psycopg2.connect(
     host="database",
     user="user",
     password="password",
-    database="gpsDb"
+    dbname="gpsDb"
 )
 
 

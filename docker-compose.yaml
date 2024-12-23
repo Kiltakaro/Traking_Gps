@@ -58,12 +58,14 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     restart: on-failure
+    tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
+
 
   test:
     build: ./producer_tests
     container_name: producer_tests
     ports:
-      - "6001:6001"
+      - "5001:5001"
     depends_on:
       - kafka
     networks:

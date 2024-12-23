@@ -1,8 +1,5 @@
 FROM python:3.11-slim
 
-# Définir le répertoire de travail dans le conteneur
-WORKDIR /app
-
 # Copy le fichier requirements.txt dans le workdir
 COPY requirements.txt .
 

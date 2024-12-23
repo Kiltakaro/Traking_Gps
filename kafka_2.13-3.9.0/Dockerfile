@@ -34,5 +34,10 @@ RUN bin/kafka-storage.sh format --config config/kraft/server.properties --cluste
 # CMD ["sh", "-c", "ls -a /kafka/config/kraft"]
 # CMD ["sh", "-c", "ls -a /kafka && ls -a /kafka/config && ls -a /etc/kafka"]
 
+
+# RUN bin/kafka-topics.sh --create --topic test_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1
+# RUN bin/kafka-topics.sh --list --bootstrap-server kafka:9092
+
 # Pour lancer le broker au lancement
 CMD ["sh", "-c", "bin/kafka-server-start.sh /kafka/config/kraft/server.properties"]
+

@@ -1,6 +1,24 @@
 Dockeriser les producers dans des vms  (Faire en sorte que ce soit "2 machines physique qui soient les producers")
 
 Fix le container du backend
+en fait dans le consumer actuel, il arrive a se co pour consume ce qui crée automatiquement le topic_test
+le container backend ne crée aucun logs je comprends pas pk
+
+sinon bug numéro 1, j'arrive pas a ecrire depuis un autre container 
+POINT TRES IMPORTANT, il FAUT CONSUME AVANT DE LANCER LE PRODUCER sinon le topic n'est pas créer et il plante
+d'ou le time(12) dans le producer
+'''''
+docker logs producer_tests
+Connexion réussie.
+Envoie msg : 0 etape1
+Envoie msg : 0 etape2
+Envoie msg : 0 etape3
+Une erreur est survenue : KafkaTimeoutError: Timeout after waiting for 10 secs.
+'''''
+en gros le producer n'arrive pas a flush
+
+######## Pour plus tard #########
+
 Tester le postgresql
 
 Utiliser un framework pour le front ? Sinon faire un super css ? Avoir un serveur pour le front ?

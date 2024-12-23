@@ -83,6 +83,7 @@ This guide will help you set up and configure three virtual machines (VMs) with 
 6. **Clone the VM:**
     - Shut down the VM.
     - In your virtualization software, clone the VM twice to create two additional.
+    - Once the cloning is done, you can start the VMs in headless mode and then change the hostname of each VM to `broker`, `producer1` and `producer2` respectively.
 
 7. **To launch the VMs in the future:**
     - Start the VMs in headless start mode to save resources (small [icon](https://prnt.sc/SaN3VSw3tbKP) on the right of the VM in VirtualBox).

@@ -13,7 +13,7 @@ try:
         value_serializer=lambda v: json.dumps(v).encode('utf-8'),
         acks='all'
     )
-    print("Connexion Producer réussie.")
+    print("Connexion PRODUCER réussie.")
     # Envoyer des messages comme avant
 except KafkaTimeoutError as e:
     print(f"Erreur de connexion à Kafka : {e}")

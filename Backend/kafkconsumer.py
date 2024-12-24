@@ -15,11 +15,12 @@ try:
         'test_topic',
         bootstrap_servers=['kafka:9092'],  # Utiliser le nom du service Kafka défini dans docker-compose
         auto_offset_reset='earliest',  # Lire les messages depuis le début
+        # auto_offset_reset='latest',  # Lire les nouveaux msg
         enable_auto_commit=True,  # Valider automatiquement les offsets
         group_id='my_consumer_group',  # Définir le groupe du consommateur
         value_deserializer=lambda x: json.loads(x.decode('utf-8'))  # transformer les données en JSON
     )
-    print("Connexion réussie.")
+    print("Connexion CONSUMER réussie.")
 except KafkaError as e:
     print(f"Erreur de connexion à Kafka : {e}")
     while True:

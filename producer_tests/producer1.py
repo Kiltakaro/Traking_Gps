@@ -2,14 +2,16 @@ from kafka import KafkaProducer
 from kafka.errors import KafkaError, KafkaTimeoutError
 import json
 import time
-
+import os
 
 # Initialiser le producer Kafka
 print(f"test print")
 time.sleep(12)
+
+kafka_broker_ip = os.getenv('KAFKA_BROKER_IP', 'localhost')
 try:
     producer = KafkaProducer(
-        bootstrap_servers='kafka:9092',
+        bootstrap_servers=f'{kafka_broker_ip}:9092',
         value_serializer=lambda v: json.dumps(v).encode('utf-8'),
         acks='all'
     )
@@ -22,7 +24,7 @@ except KafkaTimeoutError as e:
         time.sleep(10)  #
 
 try:
-    for i in range(3): 
+    for i in range(10): 
         print(f"Envoie msg : {i} etape1")
         message = {'IP': 1, 'latitude': 48.8566 + (i * 0.001), 'longitude': 2.3522 + (i * 0.001)}
         print(f"Envoie msg : {i} etape2")

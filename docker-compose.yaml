@@ -61,19 +61,19 @@ services:
     tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
 
 
-  # test:
-  #   build: ./producer_tests
-  #   container_name: producer_tests
-  #   ports:
-  #     - "5001:5001"
-  #   depends_on:
-  #     - kafka
-  #   networks:
-  #     - app-network
-  #   dns:
-  #     - 8.8.8.8
-  #     - 8.8.4.4
-  #   tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
+  test:
+    build: ./producer_tests
+    container_name: producer_tests
+    ports:
+      - "5001:5001"
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
 
 
 volumes:

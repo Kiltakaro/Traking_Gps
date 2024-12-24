@@ -1,18 +1,19 @@
 import asyncio
 import logging
-from fastapi import FastAPI, BackgroundTasks, WebSocket
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from kafka import KafkaConsumer
 import json
 from typing import List
-import mysql.connector
+# import mysql.connector
 import threading
-from fastapi.responses import HTMLResponse
+# from fastapi.responses import HTMLResponse
 
 import psycopg2
+import time 
 
-
+time.sleep(7)
 
 
 # Configuration de base du logging
@@ -39,25 +40,26 @@ app.add_middleware(
 ####
 
 # Initialiser le consommateur Kafka
-KAFKA_BROKER = "localhost:9092"
-KAFKA_TOPIC = "test_topic"
+# KAFKA_BROKER = "localhost:9092"
+KAFKA_BROKER = "kafka:9092"
+KAFKA_TOPIC = "coordinates_topic"
 
 
 # Connexion à la base de données MySQL
-db_connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="rootpassword",
-    database="Kafka_db"
-)
+# db_connection = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     password="rootpassword",
+#     database="Kafka_db"
+# )
 
 # J'arrive pas a me co avec postgres
-# db_connection = psycopg2.connect(
-#     host="localhost",
-#     user="postgres_user",
-#     password="postgres_password",
-#     database="kafka_db"
-# )
+db_connection = psycopg2.connect(
+    host="database",
+    user="user",
+    password="password",
+    dbname="gpsDb"
+)
 
 
 cursor = db_connection.cursor()
@@ -72,6 +74,7 @@ from fastapi.templating import Jinja2Templates
 app.mount("/static", StaticFiles(directory="Front"), name="static")
 
 templates = Jinja2Templates(directory="Front")
+
 
 @app.get('/')
 def index(request: Request):
@@ -103,20 +106,26 @@ def consume_messages(consumer_group):
             cursor.execute(sql, val)
             db_connection.commit()
             logging.info(f"{cursor.rowcount} record inserted")
-        except mysql.connector.Error as err:
+        # except mysql.connector.Error as err:
+        except psycopg2.connect.Error as err:
             logging.error(f"Erreur MySQL: {err}")
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
+
+
+consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
+consumer_thread.start()
+
 # DEPRECIATED  mais pour ce qu'on fait ça suffira
 # Peut etre dupliquer le thread pour consumer 2 
-@app.on_event("startup")
-async def startup_event():
-    """
-    Démarre la consommation des messages Kafka au démarrage de l'application.
-    """
-    consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
-    consumer_thread.start()
+# @app.on_event("startup")
+# async def startup_event():
+#     """
+#     Démarre la consommation des messages Kafka au démarrage de l'application.
+#     """
+#     consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
+#     consumer_thread.start()
     # consumer_thread1 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_1',), daemon=True)
     # consumer_thread1.start()
 

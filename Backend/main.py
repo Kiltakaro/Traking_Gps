@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from fastapi import FastAPI, BackgroundTasks, WebSocket
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from kafka import KafkaConsumer
@@ -8,10 +8,12 @@ import json
 from typing import List
 # import mysql.connector
 import threading
-from fastapi.responses import HTMLResponse
+# from fastapi.responses import HTMLResponse
 
 import psycopg2
+import time 
 
+time.sleep(7)
 
 
 # Configuration de base du logging
@@ -38,8 +40,9 @@ app.add_middleware(
 ####
 
 # Initialiser le consommateur Kafka
-KAFKA_BROKER = "localhost:9092"
-KAFKA_TOPIC = "test_topic"
+# KAFKA_BROKER = "localhost:9092"
+KAFKA_BROKER = "kafka:9092"
+KAFKA_TOPIC = "coordinates_topic"
 
 
 # Connexion à la base de données MySQL

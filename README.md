@@ -92,10 +92,17 @@ This guide will help you set up and configure three virtual machines (VMs) with 
         ```sh
         sudo docker-compose up
         ```
-        - For the other two VMs:
+        - For the other two VMs (NOT FINISHED YET):
         ```sh
         sudo docker-compose -f docker-compose-producers.yml up
         ```
+        For now use 
+
+        ```sh
+        sudo docker build -t kafka-producer .
+        sudo docker run --rm -e KAFKA_BROKER_IP=192.168.1.42 --name producer kafka-producer
+        ```
+        Change the IP address to the broker VM's IP address.
 
 
 

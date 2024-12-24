@@ -7,7 +7,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # faudra peut etre RAJOTUER DE QUOI COPIER LE FRONT 
-COPY . /app
+COPY . .
 
 # Exposer le port sur lequel l'application va s'exécuter
 EXPOSE 8000

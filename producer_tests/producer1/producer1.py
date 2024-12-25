@@ -26,7 +26,7 @@ except KafkaTimeoutError as e:
 
 try:
     for i in range(10): 
-        message = {'IP': 2, 'latitude': 48.8566 + (i * 0.001), 'longitude': 2.3522 + (i * 0.001)}
+        message = {'IP': 1, 'latitude': 48.8566 + (i * 0.001), 'longitude': 2.3522 + (i * 0.001)}
         future = producer.send('coordinates_topic', value=message)
         result = future.get(timeout=25)  # Attendre que le message soit envoyé
         print(f"Message envoyé avec succès : {message}")

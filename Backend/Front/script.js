@@ -44,30 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var markerIP2;
 
     // Connexion WebSocket
-    const socket = new WebSocket('ws://localhost:8000/ws');
 
-    socket.onmessage = function(event) {
-        const lastMessage = JSON.parse(event.data);
-        console.log("Message reçu via WebSocket:", lastMessage);
+    const socket = new WebSocket(`ws://localhost:8000/ws`);
 
-        if (lastMessage.IP == 1) {
-            if (markerIP1) {
-                markerIP1.remove();
-            }
-            markerIP1 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp1 }).addTo(map)
-                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-                .openPopup();
-        } else if (lastMessage.IP == 2) {
-            if (markerIP2) {
-                markerIP2.remove();
-            }
-            markerIP2 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp2 }).addTo(map)
-                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-                .openPopup();
-        }
+    socket.onopen = function(event) {
+        console.log("WebSocket is open now.");
     };
-
-    // Version avec des messages doubles
     socket.onmessage = function(event) {
         const lastMessageNewFormat = JSON.parse(event.data);
         console.log("Message reçu via WebSocket:", lastMessageNewFormat);
@@ -89,14 +71,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 .openPopup();
         }
     };
-
     socket.onclose = function(event) {
         console.log("WebSocket fermé:", event);
     };
-
     socket.onerror = function(error) {
         console.error("WebSocket erreur:", error);
     };
+
 
 
 

@@ -12,9 +12,9 @@ import threading
 
 import psycopg2
 import time 
+import os
 
-time.sleep(7)
-
+time.sleep(6)
 
 # Configuration de base du logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -40,10 +40,8 @@ app.add_middleware(
 ####
 
 # Initialiser le consommateur Kafka
-# KAFKA_BROKER = "localhost:9092"
 KAFKA_BROKER = "kafka:9092"
 KAFKA_TOPIC = "coordinates_topic"
-
 
 # Connexion à la base de données MySQL
 # db_connection = mysql.connector.connect(
@@ -60,7 +58,6 @@ db_connection = psycopg2.connect(
     password="password",
     dbname="gpsDb"
 )
-
 
 cursor = db_connection.cursor()
 
@@ -225,6 +222,7 @@ async def websocket_endpoint(websocket: WebSocket):
         cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
         last_msg2 = cursor.fetchone()
 
+        # CASE IP1 + IP2 ont des msg
         if last_msg1 and last_msg2:
             message = {
                 "IP1": last_msg1[1],
@@ -236,12 +234,46 @@ async def websocket_endpoint(websocket: WebSocket):
                 "longitudeIP2": last_msg2[3],
                 "messageDateIP2": last_msg2[4].isoformat()
             }
+            print("Les 2 msg sont la")
             await websocket.send_json(message)
-        await asyncio.sleep(3)  # Attendre 5 secondes avant de vérifier à nouveau
 
+        # CASE IP1 A DES MSG MAIS PAS IP2 
+        elif last_msg1 and not last_msg2:
+            message = {
+                "IP1": last_msg1[1],
+                "latitudeIP1": last_msg1[2],
+                "longitudeIP1": last_msg1[3],
+                "messageDateIP1": last_msg1[4].isoformat(),
+                "IP2": None,
+                "latitudeIP2": None,
+                "longitudeIP2": None,
+                "messageDateIP2": None
+            }
+            print("Seul IP1 msg sont la")
+            await websocket.send_json(message)
 
-# TUTO WEBSOCKET 
-# https://fastapi.tiangolo.com/advanced/websockets/#in-production
+        # CASE IP1 A 0 MSG MAIS IP2 SI
+        elif not last_msg1 and last_msg2:
+            message = {
+                "IP1": None,
+                "latitudeIP1": None,
+                "longitudeIP1": None,
+                "messageDateIP1": None,
+                "IP2": last_msg2[1],
+                "latitudeIP2": last_msg2[2],
+                "longitudeIP2": last_msg2[3],
+                "messageDateIP2": last_msg2[4].isoformat()
+            }
+            print("Seul IP2 msg sont la")
+            await websocket.send_json(message)
+
+        else : 
+            print("pas de msg")
+        
+        await asyncio.sleep(5)  # Verifier s'il y a du nouveau toutes les 5 secondes
+
+# # TUTO WEBSOCKET 
+# # https://fastapi.tiangolo.com/advanced/websockets/#in-production
 # @app.websocket("/ws")
 # async def websocket_endpoint(websocket: WebSocket):
 #     await websocket.accept()

@@ -1,18 +1,14 @@
 import asyncio
 import logging
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from kafka import KafkaConsumer
 import json
-from typing import List
-# import mysql.connector
 import threading
-# from fastapi.responses import HTMLResponse
-
 import psycopg2
 import time 
-import os
 
 time.sleep(6)
 
@@ -43,15 +39,7 @@ app.add_middleware(
 KAFKA_BROKER = "kafka:9092"
 KAFKA_TOPIC = "coordinates_topic"
 
-# Connexion à la base de données MySQL
-# db_connection = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="rootpassword",
-#     database="Kafka_db"
-# )
-
-# J'arrive pas a me co avec postgres
+# Connexion à postgresql db
 db_connection = psycopg2.connect(
     host="database",
     user="user",
@@ -62,9 +50,6 @@ db_connection = psycopg2.connect(
 cursor = db_connection.cursor()
 
 app = FastAPI()
-
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
 
 # Normalement ça sert a rien mais je sais pas si le cache fait que ça marche alors que ça devrait pas
 # Monter le répertoire de fichiers statiques
@@ -113,21 +98,6 @@ def consume_messages(consumer_group):
 
 consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
 consumer_thread.start()
-
-# DEPRECIATED  mais pour ce qu'on fait ça suffira
-# Peut etre dupliquer le thread pour consumer 2 
-# @app.on_event("startup")
-# async def startup_event():
-#     """
-#     Démarre la consommation des messages Kafka au démarrage de l'application.
-#     """
-#     consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
-#     consumer_thread.start()
-    # consumer_thread1 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_1',), daemon=True)
-    # consumer_thread1.start()
-
-    # consumer_thread2 = threading.Thread(target=consume_messages, args=('fastapi_consumer_group_2',), daemon=True)
-    # consumer_thread2.start()
 
 
 # A FAIRE SI NECESSAIRE
@@ -186,26 +156,6 @@ async def get_last_message_IP2():
         "longitude": last_msg[3],
         "messageDate": last_msg[4].isoformat()  # Convertir datetime en string
     }
-
-
-# On pourrait rajouter un truc du style, si le derneir msg est le meme bah envoie pas de msg
-# ou si y'a un msg de consumé, go notifier le wwebsocket mais pour le moment je sais pas faire ça
-# @app.websocket("/ws")
-# async def websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     while True:
-#         cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC LIMIT 1")
-#         last_msg = cursor.fetchone()
-#         if last_msg:
-#             message = {
-#                 "id": last_msg[0],
-#                 "IP": last_msg[1],
-#                 "latitude": last_msg[2],
-#                 "longitude": last_msg[3],
-#                 "messageDate": last_msg[4].isoformat()
-#             }
-#             await websocket.send_json(message)
-#         await asyncio.sleep(3)  # Attendre 5 secondes avant de vérifier à nouveau
 
 
 # Tentative double msg format
@@ -271,12 +221,3 @@ async def websocket_endpoint(websocket: WebSocket):
             print("pas de msg")
         
         await asyncio.sleep(5)  # Verifier s'il y a du nouveau toutes les 5 secondes
-
-# # TUTO WEBSOCKET 
-# # https://fastapi.tiangolo.com/advanced/websockets/#in-production
-# @app.websocket("/ws")
-# async def websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     while True:
-#         data = await websocket.receive_text()
-#         await websocket.send_text(f"Message text was: {data}")

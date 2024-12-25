@@ -12,6 +12,7 @@ kafka_broker_ip = os.getenv('KAFKA_BROKER_IP', 'localhost')
 try:
     producer = KafkaProducer(
         bootstrap_servers=f'{kafka_broker_ip}:9092',
+        # bootstrap_servers=f'Kafka:9092',
         value_serializer=lambda v: json.dumps(v).encode('utf-8'),
         acks='all'
     )
@@ -29,7 +30,7 @@ try:
         message = {'IP': 1, 'latitude': 48.8566 + (i * 0.001), 'longitude': 2.3522 + (i * 0.001)}
         print(f"Envoie msg : {i} etape2")
         #producer.send('test_topic', message)
-        future = producer.send('test_topic', value=message)
+        future = producer.send('coordinates_topic', value=message)
         print(f"Envoie msg : {i} etape3")
         result = future.get(timeout=25)  # Attendre que le message soit envoyé
         #producer.flush() 

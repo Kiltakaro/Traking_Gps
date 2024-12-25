@@ -12,7 +12,7 @@ print("Init consommateur Kafka")
 try:
     time.sleep(8)
     consumer = KafkaConsumer(
-        'test_topic',
+        'coordinates_topic',
         bootstrap_servers=['kafka:9092'],  # Utiliser le nom du service Kafka défini dans docker-compose
         auto_offset_reset='earliest',  # Lire les messages depuis le début
         # auto_offset_reset='latest',  # Lire les nouveaux msg

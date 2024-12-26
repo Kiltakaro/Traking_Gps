@@ -98,9 +98,13 @@ This guide will help you set up and configure three virtual machines (VMs) with 
         ```sh
         ./start-broker.sh
         ```
+        To stop the VM, run the following command:
+        ```sh
+        ./stop-broker.sh
+        ```
 
 
-        - For the other two VMs (NOT FINISHED YET):
+        - For the other two VMs:
         ```sh
         ./prepare-producer.sh <id of the producer (1 or 2)>
         ```
@@ -108,16 +112,11 @@ This guide will help you set up and configure three virtual machines (VMs) with 
         ```sh
         ./start-producer.sh <broker_ip>
         ```
-        where `<broker_ip>` is the IP address of the broker VM.
-        ```
-        For now use 
-
+        where `<broker_ip>` is the IP address of the broker VM.<br>
+        To stop the VMs, run the following command:
         ```sh
-        sudo docker build -t kafka-producer .
-        sudo docker run --rm -e KAFKA_BROKER_IP=192.168.1.42 --name producer kafka-producer
+        ./stop-producer.sh
         ```
-        Change the IP address to the broker VM's IP address.
-
 
 
 NOT FINISHED YET TODO

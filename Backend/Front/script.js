@@ -40,8 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var markerIP2;
 
     // Connexion WebSocket
+    const ip_broker = "192.168.1.42" // IP du broker  (temporaire pour test)
 
-    const socket = new WebSocket(`ws://localhost:8000/ws`);
+    const socket = new WebSocket(`ws://${ip_broker}:8000/ws`);
 
     socket.onopen = function(event) {
         console.log("WebSocket is open now.");

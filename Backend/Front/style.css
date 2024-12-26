@@ -11,10 +11,11 @@ header {
     color: white;
     padding: 20px 0;
     text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-h1 {
-    margin: 0;
+h1, h2 {
+    margin: 10px 0;
 }
 
 main {
@@ -22,15 +23,43 @@ main {
 }
 
 #map {
-    height: 750px; 
+    height: 700px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 footer {
     background-color: #4CAF50;
     color: white;
     text-align: center;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
+    padding: 20px 10px;
+    position: relative;
     bottom: 0;
+    width: 100%;
 }
+
+.bas {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px auto;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.file-card {
+    text-align: center;
+    width: 40%;
+}
+
+.file-card h2 {
+    margin-bottom: 18px;
+    font-size: 1.5rem;
+}
+
+.file-card p {
+    margin: 4px 0;
+    font-size: 1rem; 
+}
+

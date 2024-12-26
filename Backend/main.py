@@ -10,6 +10,8 @@ import threading
 import psycopg2 # type: ignore
 import time 
 
+
+# Attend que le broker soit allumé
 time.sleep(6)
 
 # Configuration de base du logging

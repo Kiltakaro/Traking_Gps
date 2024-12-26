@@ -7,7 +7,7 @@ services:
       POSTGRES_DB: gpsDb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_HOST_AUTH_METHOD: 
+      POSTGRES_HOST_AUTH_METHOD: trust
     restart: unless-stopped
     ports:
       - "5433:5432"
@@ -45,6 +45,7 @@ services:
       - kafka_data:/var/lib/kafka/data
     networks:
       - app-network
+    restart: unless-stopped
 
   backend:
     build: ./Backend
@@ -63,19 +64,19 @@ services:
     tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
 
 
-  test:
-    build: ./producer_tests
-    container_name: producer_tests
-    ports:
-      - "5001:5001"
-    depends_on:
-      - kafka
-    networks:
-      - app-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
+  # test:
+  #   build: ./producer_tests
+  #   container_name: producer_tests
+  #   ports:
+  #     - "5001:5001"
+  #   depends_on:
+  #     - kafka
+  #   networks:
+  #     - app-network
+  #   dns:
+  #     - 8.8.8.8
+  #     - 8.8.4.4
+  #   tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
 
 
 volumes:

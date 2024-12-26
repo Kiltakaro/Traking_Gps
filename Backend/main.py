@@ -89,7 +89,7 @@ def consume_messages(consumer_group):
             db_connection.commit()
             logging.info(f"{cursor.rowcount} record inserted")
         # except mysql.connector.Error as err:
-        except psycopg2.connect.Error as err:
+        except psycopg2.Error as err:
             logging.error(f"Erreur MySQL: {err}")
         except Exception as e:
             logging.error(f"Erreur: {e}")
@@ -107,6 +107,23 @@ async def get_messages():
     """
     Récupère tous les messages consommés.
     """
+    # cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC")
+    # messages = cursor.fetchall()
+
+    # if not messages:
+    #     logging.info("Aucun message disponible.")
+    #     return {"message": "Aucun message disponible."}
+
+    # return [
+    #     {
+    #         "id": msg[0],
+    #         "IP": msg[1],
+    #         "latitude": msg[2],
+    #         "longitude": msg[3],
+    #         "messageDate": msg[4].isoformat()
+    #     }
+    #     for msg in messages
+    # ]
     pass
 
 

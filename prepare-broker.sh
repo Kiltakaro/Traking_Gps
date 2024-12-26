@@ -2,7 +2,7 @@
 
 # Check if the script received an argument
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <IPv4 address>"
+    echo "Usage: $0 <IPv4 address of the VM running the broker>"
     exit 1
 fi
 
@@ -15,7 +15,7 @@ if [[ ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # Build the docker-compose
-docker-compose build
+# docker-compose build
 
 # Define the path to the server.properties file
 CONFIG_FILE="kafka_2.13-3.9.0/config/kraft/server.properties"

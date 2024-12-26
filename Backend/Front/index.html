@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Carte avec Leaflet</title>
+    <title>Tracker Gps</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="static/style.css">
@@ -17,13 +17,31 @@
 
 </head>
 
+
 <body>
-    <h1>Carte interactive avec Leaflet</h1>
+    <header>
+        <h1>Tracker GPS</h1>
+    </header>
     <div id="map"></div>
 
-    <div id="message" style="margin-top: 20px; font-size: 16px;"></div>
-
     <script src="static/script.js" type="text/javascript"></script>
+
+    <footer>
+        <div class="bas">
+            <div class='file-card'>
+                <h2> IP1 Last message </h2>
+                <p id="messageIP1"></p>
+            </div>
+            <div class='file-card'>
+                <h2> IP2 Last message </h2>
+                <p id="messageIP2"></p>
+            </div>
+        </div>
+        <p>&copy; 2024.</p>
+
+    </footer>
 </body>
+
+
 
 </html>

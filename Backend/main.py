@@ -10,6 +10,8 @@ import threading
 import psycopg2 # type: ignore
 import time 
 
+
+# Attend que le broker soit allumé
 time.sleep(6)
 
 # Configuration de base du logging
@@ -70,6 +72,8 @@ async def root():
 def consume_messages(consumer_group):
     """
     Consomme les messages de Kafka et les stocke dans la bdd mysql.
+     Parameters:
+    - consumer_groupe: group_ip pour le broker kafka
     """
     consumer = KafkaConsumer(
         KAFKA_TOPIC,
@@ -90,7 +94,7 @@ def consume_messages(consumer_group):
             logging.info(f"{cursor.rowcount} record inserted")
         # except mysql.connector.Error as err:
         except psycopg2.Error as err:
-            logging.error(f"Erreur MySQL: {err}")
+            logging.error(f"Erreur SQL: {err}")
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
@@ -178,6 +182,10 @@ async def get_last_message_IP2():
 # Tentative double msg format
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    """
+    Ouvre un websocket avec le frontend pour lui donner les dernières coordonnées GPS
+    """
+    
     await websocket.accept()
     while True:
 
@@ -189,52 +197,60 @@ async def websocket_endpoint(websocket: WebSocket):
         cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC LIMIT 1", (ip,))
         last_msg2 = cursor.fetchone()
 
-        # CASE IP1 + IP2 ont des msg
-        if last_msg1 and last_msg2:
-            message = {
-                "IP1": last_msg1[1],
-                "latitudeIP1": last_msg1[2],
-                "longitudeIP1": last_msg1[3],
-                "messageDateIP1": last_msg1[4].isoformat(),
-                "IP2": last_msg2[1],
-                "latitudeIP2": last_msg2[2],
-                "longitudeIP2": last_msg2[3],
-                "messageDateIP2": last_msg2[4].isoformat()
-            }
-            print("Les 2 msg sont la")
-            await websocket.send_json(message)
+        try:
+            # CASE IP1 + IP2 ont des msg
+            if last_msg1 and last_msg2:
+                message = {
+                    "IP1": last_msg1[1],
+                    "latitudeIP1": last_msg1[2],
+                    "longitudeIP1": last_msg1[3],
+                    "messageDateIP1": last_msg1[4].isoformat(),
+                    "IP2": last_msg2[1],
+                    "latitudeIP2": last_msg2[2],
+                    "longitudeIP2": last_msg2[3],
+                    "messageDateIP2": last_msg2[4].isoformat()
+                }
+                print("Les 2 msg sont la")
+                await websocket.send_json(message) # A FACTORISER
 
-        # CASE IP1 A DES MSG MAIS PAS IP2 
-        elif last_msg1 and not last_msg2:
-            message = {
-                "IP1": last_msg1[1],
-                "latitudeIP1": last_msg1[2],
-                "longitudeIP1": last_msg1[3],
-                "messageDateIP1": last_msg1[4].isoformat(),
-                "IP2": None,
-                "latitudeIP2": None,
-                "longitudeIP2": None,
-                "messageDateIP2": None
-            }
-            print("Seul IP1 msg sont la")
-            await websocket.send_json(message)
+            # CASE IP1 A DES MSG MAIS PAS IP2 
+            elif last_msg1 and not last_msg2:
+                message = {
+                    "IP1": last_msg1[1],
+                    "latitudeIP1": last_msg1[2],
+                    "longitudeIP1": last_msg1[3],
+                    "messageDateIP1": last_msg1[4].isoformat(),
+                    "IP2": None,
+                    "latitudeIP2": None,
+                    "longitudeIP2": None,
+                    "messageDateIP2": None
+                }
+                print("Seul IP1 msg sont la")
+                await websocket.send_json(message) # A FACTORISER
 
-        # CASE IP1 A 0 MSG MAIS IP2 SI
-        elif not last_msg1 and last_msg2:
-            message = {
-                "IP1": None,
-                "latitudeIP1": None,
-                "longitudeIP1": None,
-                "messageDateIP1": None,
-                "IP2": last_msg2[1],
-                "latitudeIP2": last_msg2[2],
-                "longitudeIP2": last_msg2[3],
-                "messageDateIP2": last_msg2[4].isoformat()
-            }
-            print("Seul IP2 msg sont la")
-            await websocket.send_json(message)
+            # CASE IP1 A 0 MSG MAIS IP2 SI
+            elif not last_msg1 and last_msg2:
+                message = {
+                    "IP1": None,
+                    "latitudeIP1": None,
+                    "longitudeIP1": None,
+                    "messageDateIP1": None,
+                    "IP2": last_msg2[1],
+                    "latitudeIP2": last_msg2[2],
+                    "longitudeIP2": last_msg2[3],
+                    "messageDateIP2": last_msg2[4].isoformat()
+                }
+                print("Seul IP2 msg sont la")
+                await websocket.send_json(message) # A FACTORISER
 
-        else : 
-            print("pas de msg")
+            else : 
+                print("pas de msg")
         
+        except psycopg2.Error as err:
+            logging.error(f"Erreur SQL: {err}")
+        except Exception as e:
+            logging.error(f"Erreur: {e}")
+
+
+
         await asyncio.sleep(5)  # Verifier s'il y a du nouveau toutes les 5 secondes

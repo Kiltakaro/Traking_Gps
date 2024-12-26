@@ -39,7 +39,7 @@ services:
       KAFKA_LOG_SEGMENT_BYTES: 1073741824
       KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_CREATE_TOPICS: "test_topic:1:1"
+      KAFKA_CREATE_TOPICS: "coordinates_topic:1:1"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
     volumes:
       - kafka_data:/var/lib/kafka/data

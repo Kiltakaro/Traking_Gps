@@ -15,7 +15,7 @@ if [[ ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # Build the docker-compose
-# docker-compose build
+docker-compose build
 
 # Define the path to the server.properties file
 CONFIG_FILE="kafka_2.13-3.9.0/config/kraft/server.properties"

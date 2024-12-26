@@ -88,13 +88,27 @@ This guide will help you set up and configure three virtual machines (VMs) with 
 7. **To launch the VMs in the future:**
     - Start the VMs in headless start mode to save resources (small [icon](https://prnt.sc/SaN3VSw3tbKP) on the right of the VM in VirtualBox).
     - Navigate to the project directory and depending on the VM you are in, run the following command:
-        - For the broker VM:
+        - For the broker VM: <br>
+        To prepare the broker VM, run the following command:
         ```sh
-        sudo docker-compose up
+        ./prepare-broker.sh <broker_ip>
         ```
+        where `<broker_ip>` is the IP address of the broker VM.<br>
+        Then, to start the broker VM, run the following command:
+        ```sh
+        ./start-broker.sh
+        ```
+
+
         - For the other two VMs (NOT FINISHED YET):
         ```sh
-        sudo docker-compose -f docker-compose-producers.yml up
+        ./prepare-producer.sh <id of the producer (1 or 2)>
+        ```
+        Then, to start the producer VM, run the following command:
+        ```sh
+        ./start-producer.sh <broker_ip>
+        ```
+        where `<broker_ip>` is the IP address of the broker VM.
         ```
         For now use 
 

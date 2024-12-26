@@ -1,13 +1,13 @@
 import asyncio
 import logging
-from fastapi import FastAPI, WebSocket, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from kafka import KafkaConsumer
+from fastapi import FastAPI, WebSocket, Request # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+from fastapi.staticfiles import StaticFiles # type: ignore
+from fastapi.templating import Jinja2Templates # type: ignore
+from kafka import KafkaConsumer # type: ignore
 import json
 import threading
-import psycopg2
+import psycopg2 # type: ignore
 import time 
 
 time.sleep(6)

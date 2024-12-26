@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
                 const messageDiv2 = document.getElementById('messageIP2');
                 messageDiv2.innerHTML = `
-                    IP: ${lastMessageNewFormat.IP1},<br>
+                    IP: ${lastMessageNewFormat.IP2},<br>
                     Latitude: ${formattedLatitudeIP2},<br>
                     Longitude: ${formattedLongitudeIP2},<br>
                     Date: ${readableDateIP2}

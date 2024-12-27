@@ -1,17 +1,23 @@
 #!/bin/bash
 
-# Check if the script received an argument
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <IPv4 address of the VM running the broker>"
+# Check if the script received at least one argument
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $0 <IPv4 address of the VM running the broker> [--no-cache]"
     exit 1
 fi
 
 if [ "$1" == "--help" ]; then
-    echo "Usage: $0 <IPv4 address of the VM running the broker>"
+    echo "Usage: $0 <IPv4 address of the VM running the broker> [--no-cache]"
     exit 0
 fi
 
 IP_ADDRESS=$1
+NO_CACHE=""
+
+# Check for the --no-cache parameter
+if [ "$#" -eq 2 ] && [ "$2" == "--no-cache" ]; then
+    NO_CACHE="--no-cache"
+fi
 
 # Validate the IPv4 address format
 if [[ ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -20,7 +26,7 @@ if [[ ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
 fi
 
 # Build the docker-compose
-docker-compose build
+docker-compose build $NO_CACHE
 
 # Define the path to the server.properties file
 CONFIG_FILE="kafka_2.13-3.9.0/config/kraft/server.properties"

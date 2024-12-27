@@ -25,8 +25,7 @@ if [[ ! $IP_ADDRESS =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     exit 1
 fi
 
-# Build the docker-compose
-docker-compose build $NO_CACHE
+
 
 # Define the path to the server.properties file
 CONFIG_FILE="kafka_2.13-3.9.0/config/kraft/server.properties"
@@ -53,5 +52,9 @@ fi
 # Delete the existing ip_broker line (if any) and add the new one
 sed -i '/^export const ip_broker = /d' "$IP_JS_FILE"
 echo "export const ip_broker = \"$IP_ADDRESS\";" >> "$IP_JS_FILE"
+
+
+# Build the docker-compose
+docker-compose build $NO_CACHE
 
 echo "Broker preparation complete."

@@ -2,6 +2,7 @@
 
 show_help() {
     echo "Usage: $0 [option]"
+    echo ""
     echo "Options:"
     echo "  --help        Show this help message"
     echo "  1             prepare producer1 in the producer1 VM"

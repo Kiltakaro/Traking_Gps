@@ -3,6 +3,8 @@
 # Check if the --help option is provided
 if [ "$1" == "--help" ]; then
     echo "Usage: $0 [-v] [--help]"
+    echo ""
+    echo "Options:"
     echo "  -v      Remove volumes"
     echo "  --help  Display this help message"
     exit 0

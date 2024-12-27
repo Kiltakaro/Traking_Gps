@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Check if the first parameter is --help
 if [[ "$1" == "--help" ]]; then
     echo "Usage: $0 <BROKER_IP>"

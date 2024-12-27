@@ -50,6 +50,7 @@ db_connection = psycopg2.connect(
 )
 
 cursor = db_connection.cursor()
+####
 
 app = FastAPI()
 
@@ -83,7 +84,7 @@ def consume_messages(consumer_group):
         bootstrap_servers=[KAFKA_BROKER],
         auto_offset_reset='earliest',
         enable_auto_commit=True,
-        group_id=consumer_group,  # ajout de variable pour lire IP1 ou IP2 avec les thread
+        group_id=consumer_group,  
         value_deserializer=lambda x: json.loads(x.decode('utf-8'))
     )
     for message in consumer:

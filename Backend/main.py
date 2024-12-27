@@ -19,8 +19,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 app = FastAPI()
 
-# Configuration CORS
-# OBLIGé SINON ça fonctionne pas
+##### Configuration CORS
+# Obligé SINON ça fonctionne pas
 origins = [
     "http://localhost",
     "http://localhost:8000",
@@ -35,13 +35,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-####
+#####
 
-# Initialiser le consommateur Kafka
+##### Initialiser le consommateur Kafka
 KAFKA_BROKER = "kafka:9092"
 KAFKA_TOPIC = "coordinates_topic"
 
-# Connexion à postgresql db
+##### Connexion à postgresql db
 db_connection = psycopg2.connect(
     host="database",
     user="user",
@@ -53,19 +53,23 @@ cursor = db_connection.cursor()
 
 app = FastAPI()
 
-# Normalement ça sert a rien mais je sais pas si le cache fait que ça marche alors que ça devrait pas
-# Monter le répertoire de fichiers statiques
+# Monter le répertoire de fichiers statiques pour avoir le front
 app.mount("/static", StaticFiles(directory="Front"), name="static")
-
 templates = Jinja2Templates(directory="Front")
 
 
 @app.get('/')
 def index(request: Request):
+    """
+    Page principale de l'appli de tracking gps
+    """
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/hello")
 async def root():
+    """
+    Pour tester l'appli si erreur sur la page root
+    """
     return {"message": "Hello world ça marche"}
 
 #commenter sur la variable
@@ -99,40 +103,87 @@ def consume_messages(consumer_group):
             logging.error(f"Erreur: {e}")
 
 
-
+#### Setup thread consommer broker 
 consumer_thread = threading.Thread(target=consume_messages, args=('fastapi_consumer_group',), daemon=True)
 consumer_thread.start()
 
 
-# A FAIRE SI NECESSAIRE
-# ou si ça vous amuse, perso j'ai la flemme d'écrire ces 4 lignes 
 @app.get("/messages")
 async def get_messages():
     """
     Récupère tous les messages consommés.
     """
-    # cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC")
-    # messages = cursor.fetchall()
+    cursor.execute("SELECT * FROM Coordinates ORDER BY messageDate DESC")
+    messages = cursor.fetchall()
 
-    # if not messages:
-    #     logging.info("Aucun message disponible.")
-    #     return {"message": "Aucun message disponible."}
+    if not messages:
+        return {"message": "Aucun message disponible."}
 
-    # return [
-    #     {
-    #         "id": msg[0],
-    #         "IP": msg[1],
-    #         "latitude": msg[2],
-    #         "longitude": msg[3],
-    #         "messageDate": msg[4].isoformat()
-    #     }
-    #     for msg in messages
-    # ]
-    pass
-
+    return [
+        {
+            "id": msg[0],
+            "IP": msg[1],
+            "latitude": msg[2],
+            "longitude": msg[3],
+            "messageDate": msg[4].isoformat()
+        }
+        for msg in messages
+    ]
+    # pass
 
 
-# A dedoubler sur 2 threads pour faire IP1 et IP2 en meme temps ? 
+@app.get("/messages/IP1")
+async def get_messages_IP1():
+    """
+    Récupère tous les messages consommés d'IP1.
+    """
+
+    ip = 1
+    cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC", (ip,))
+    messages = cursor.fetchall()
+
+
+    if not messages:
+        return {"message": "Aucun message disponible."}
+
+    return [
+        {
+            "id": msg[0],
+            "IP": msg[1],
+            "latitude": msg[2],
+            "longitude": msg[3],
+            "messageDate": msg[4].isoformat()
+        }
+        for msg in messages
+    ]
+
+
+@app.get("/messages/IP2")
+async def get_messages_IP2():
+    """
+    Récupère tous les messages consommés d'IP2.
+    """
+    
+    ip = 2
+    cursor.execute("SELECT * FROM Coordinates WHERE IP = %s ORDER BY messageDate DESC", (ip,))
+    messages = cursor.fetchall()
+
+
+    if not messages:
+        return {"message": "Aucun message disponible."}
+
+    return [
+        {
+            "id": msg[0],
+            "IP": msg[1],
+            "latitude": msg[2],
+            "longitude": msg[3],
+            "messageDate": msg[4].isoformat()
+        }
+        for msg in messages
+    ]
+
+
 @app.get("/messages/IP1/last")
 async def get_last_message_IP1():
     """
@@ -142,11 +193,8 @@ async def get_last_message_IP1():
     last_msg = cursor.fetchone()
 
     if not last_msg:
-        logging.info("Aucun message disponible.")
         return {"message": "Aucun message disponible."}
     
-    # logging.info(f"Dernier message : {last_msg}")
-    # return {last_msg}
     return {
         "id": last_msg[0],
         "IP": last_msg[1],
@@ -154,6 +202,7 @@ async def get_last_message_IP1():
         "longitude": last_msg[3],
         "messageDate": last_msg[4].isoformat()  # Convertir datetime en string
     }
+
 
 
 @app.get("/messages/IP2/last")
@@ -166,10 +215,8 @@ async def get_last_message_IP2():
     last_msg = cursor.fetchone()
 
     if not last_msg:
-        logging.info("Aucun message disponible.")
         return {"message": "Aucun message disponible."}
     
-    # logging.info(f"Dernier message : {last_msg}")
     return {
         "id": last_msg[0],
         "IP": last_msg[1],
@@ -251,6 +298,4 @@ async def websocket_endpoint(websocket: WebSocket):
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
-
-
-        await asyncio.sleep(5)  # Verifier s'il y a du nouveau toutes les 5 secondes
+        await asyncio.sleep(4)  # Verifier s'il y a du nouveau toutes les 5 secondes

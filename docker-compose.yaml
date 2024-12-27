@@ -57,27 +57,11 @@ services:
       - kafka
     networks:
       - app-network
-    dns:
+    dns: # sert a bypass un bug a cause du setup du reseau de l'école
       - 8.8.8.8
       - 8.8.4.4
     restart: on-failure
-    tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
-
-
-  # test:
-  #   build: ./producer_tests
-  #   container_name: producer_tests
-  #   ports:
-  #     - "5001:5001"
-  #   depends_on:
-  #     - kafka
-  #   networks:
-  #     - app-network
-  #   dns:
-  #     - 8.8.8.8
-  #     - 8.8.4.4
-  #   tty: true # je sais pas ce que ça fait mais askip ça aidera a debug
-
+    tty: true # pratique pour debug
 
 volumes:
   db_data:

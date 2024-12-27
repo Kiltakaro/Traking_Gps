@@ -8,8 +8,8 @@ if [ "$#" -ne 1 ]; then
 fi
 
 if [ "$1" == "--help" ]; then
-        echo "Usage: $0 <IPv4 address of the VM running the broker>"
-        exit 0
+    echo "Usage: $0 <IPv4 address of the VM running the broker>"
+    exit 0
 fi
 
 IP_ADDRESS=$1

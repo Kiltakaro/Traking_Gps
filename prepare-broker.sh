@@ -3,13 +3,13 @@
 
 # Check if the script received an argument
 if [ "$#" -ne 1 ]; then
-    if [ "$1" == "--help" ]; then
+    echo "Usage: $0 <IPv4 address of the VM running the broker>"
+    exit 1
+fi
+
+if [ "$1" == "--help" ]; then
         echo "Usage: $0 <IPv4 address of the VM running the broker>"
         exit 0
-    else
-        echo "Usage: $0 <IPv4 address of the VM running the broker>"
-        exit 1
-    fi
 fi
 
 IP_ADDRESS=$1

@@ -73,6 +73,7 @@ By following these steps, you will have a fully functional Tracking GPS Microser
 2. **Install Docker:**
     ```sh
     sudo apt install docker.io
+    sudo apt install docker-compose
     ```
     Steps from 2. and 3. could be different, you may not need to enter all those commands to install Docker if you are prompted to install it, as well as with OpenSSH Server.
 

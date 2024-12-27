@@ -72,7 +72,6 @@ async def root():
     """
     return {"message": "Hello world ça marche"}
 
-#commenter sur la variable
 def consume_messages(consumer_group):
     """
     Consomme les messages de Kafka et les stocke dans la bdd mysql.
@@ -96,7 +95,7 @@ def consume_messages(consumer_group):
             cursor.execute(sql, val)
             db_connection.commit()
             logging.info(f"{cursor.rowcount} record inserted")
-        # except mysql.connector.Error as err:
+
         except psycopg2.Error as err:
             logging.error(f"Erreur SQL: {err}")
         except Exception as e:
@@ -226,7 +225,6 @@ async def get_last_message_IP2():
     }
 
 
-# Tentative double msg format
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """
@@ -295,7 +293,8 @@ async def websocket_endpoint(websocket: WebSocket):
         
         except psycopg2.Error as err:
             logging.error(f"Erreur SQL: {err}")
+
         except Exception as e:
             logging.error(f"Erreur: {e}")
 
-        await asyncio.sleep(4)  # Verifier s'il y a du nouveau toutes les 5 secondes
+        await asyncio.sleep(4)  # Verifier s'il y a du nouveau toutes les 4 secondes

@@ -1,3 +1,4 @@
+import ip_broker from './ip.js';
 document.addEventListener('DOMContentLoaded', function () {
 
 
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var markerIP2;
 
     // Connexion WebSocket
-    const ip_broker = "localhost" // IP du broker
+    // ip = ip_broker;
 
     const socket = new WebSocket(`ws://${ip_broker}:8000/ws`);
 

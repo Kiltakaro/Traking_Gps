@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Check if the script received an argument
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <IPv4 address of the VM running the broker>"
@@ -35,5 +34,18 @@ fi
 # Delete the existing advertised.listeners line (if any) and add the new one
 sed -i '/^advertised.listeners=/d' "$CONFIG_FILE"
 echo "advertised.listeners=PLAINTEXT://$IP_ADDRESS:9092,CONTROLLER://$IP_ADDRESS:9093" >> "$CONFIG_FILE"
+
+# Define the path to the ip.js file
+IP_JS_FILE="Backend/Front/ip.js"
+
+# Check if the ip.js file exists
+if [ ! -f "$IP_JS_FILE" ]; then
+    echo "ip.js file not found: $IP_JS_FILE"
+    exit 1
+fi
+
+# Delete the existing ip_broker line (if any) and add the new one
+sed -i '/^const ip_broker = /d' "$IP_JS_FILE"
+echo "const ip_broker = \"$IP_ADDRESS\";" >> "$IP_JS_FILE"
 
 echo "Broker preparation complete."

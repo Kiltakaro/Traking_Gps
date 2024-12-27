@@ -134,5 +134,9 @@ By following these steps, you will have a fully functional Tracking GPS Microser
     ```sh
     ./stop-producer.sh
     ```
+If you need any help, you can add "--help" at the end of the command to get more information.
+```sh
+./prepare-broker.sh --help
+```
 
 You may need to run the commands with `sudo` if you encounter permission issues. The website will be accessible at `http://<broker_ip>:8000` where `<broker_ip>` is the IP address of the broker VM.

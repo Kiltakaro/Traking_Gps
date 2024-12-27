@@ -45,7 +45,7 @@ if [ ! -f "$IP_JS_FILE" ]; then
 fi
 
 # Delete the existing ip_broker line (if any) and add the new one
-sed -i '/^const ip_broker = /d' "$IP_JS_FILE"
-echo "const ip_broker = \"$IP_ADDRESS\";" >> "$IP_JS_FILE"
+sed -i '/^export const ip_broker = /d' "$IP_JS_FILE"
+echo "export const ip_broker = \"$IP_ADDRESS\";" >> "$IP_JS_FILE"
 
 echo "Broker preparation complete."

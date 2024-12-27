@@ -1,4 +1,4 @@
-import ip_broker from './ip.js';
+import { ip_broker } from './ip.js';
 document.addEventListener('DOMContentLoaded', function () {
 
 

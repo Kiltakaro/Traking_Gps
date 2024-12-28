@@ -49,8 +49,6 @@ By following these steps, you will have a fully functional Tracking GPS Microser
     - **Network:**
         - Adapter 1:
             - Attached to: `Bridged Adapter` and the rest will be automatically filled. This will allow the VM to get an IP address from the network and to be accessible from other devices (e.g., your host machine and other VMs).
-    - **Shared Clipboard:**
-        - Set to `Bidirectional` to allow copying and pasting between the host and the VM. (optional + didn't work for me)
     - **SSH Configuration:**
         - Install OpenSSH Server to allow remote access to the VM. 
         ```bash
@@ -136,7 +134,7 @@ By following these steps, you will have a fully functional Tracking GPS Microser
     ```sh
     ./stop-producer.sh
     ```
-If you need any help, you can add "--help" at the end of the command to get more information.
+If you need any help, you can add "--help" at the end of the command to get more information. Example:
 ```sh
 ./prepare-broker.sh --help
 ```

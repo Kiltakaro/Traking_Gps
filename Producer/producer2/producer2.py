@@ -38,7 +38,7 @@ try:
             j = -j
         lattitude = lattitude + (i * 0.001)
         longitude = longitude + (j * 0.001)
-        message = {'IP': 1, 'latitude': lattitude, 'longitude': longitude}
+        message = {'IP': 2, 'latitude': lattitude, 'longitude': longitude}
         future = producer.send('coordinates_topic', value=message)
         result = future.get(timeout=25)  # Attendre que le message soit envoyé
         print(f"Message envoyé avec succès : {message}")

@@ -32,8 +32,12 @@ try:
     while True: 
         i = random.randint(1, 10)
         j = random.randint(1, 10)
-        lattitude = lattitude + (i * 0.003)
-        longitude = longitude + (j * 0.003)
+        if random.random() < 0.5:
+            i = -i
+        if random.random() < 0.5:
+            j = -j
+        lattitude = lattitude + (i * 0.001)
+        longitude = longitude + (j * 0.001)
         message = {'IP': 1, 'latitude': lattitude, 'longitude': longitude}
         future = producer.send('coordinates_topic', value=message)
         result = future.get(timeout=25)  # Attendre que le message soit envoyé

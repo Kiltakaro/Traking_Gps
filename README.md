@@ -118,7 +118,7 @@ By following these steps, you will have a fully functional Tracking GPS Microser
     ```
     To stop the VM, run the following command:
     ```sh
-    ./stop-broker.sh
+    ./stop-broker.sh [-v]
     ```
 
     - **For the other two VMs:**
@@ -140,3 +140,9 @@ If you need any help, you can add "--help" at the end of the command to get more
 ```
 
 You may need to run the commands with `sudo` if you encounter permission issues. The website will be accessible at `http://<broker_ip>:8000` where `<broker_ip>` is the IP address of the broker VM.
+<br>
+WARNING: You should wait until the line 
+```sh 
+backend   | <DATE> - INFO - Setting newly assigned partitions {TopicPartition(topic='coordinates_topic', partition=0)} for group fastapi_consumer_group
+```
+ has been printed in the terminal before accessing the website (it should take less than a minute).

@@ -34,14 +34,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    //////////////////// TENTATIVE WEBSOCKET //////////////////////
+    //////////////////// WEBSOCKET //////////////////////
 
 
     var markerIP1;
     var markerIP2;
 
     // Connexion WebSocket
-    // ip = ip_broker;
+
 
     const socket = new WebSocket(`ws://${ip_broker}:8000/ws`);
 

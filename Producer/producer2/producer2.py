@@ -30,8 +30,8 @@ try:
     lattitude = 48.8566
     longitude = 2.3522
     while True: 
-        i = random.randint(1, 10)
-        j = random.randint(1, 10)
+        i = random.randint(0, 10)
+        j = random.randint(0, 10)
         if random.random() < 0.5:
             i = -i
         if random.random() < 0.5:

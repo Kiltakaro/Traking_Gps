@@ -1,3 +1,4 @@
+import { ip_broker } from './ip.js';
 document.addEventListener('DOMContentLoaded', function () {
 
 
@@ -22,10 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
         popupAnchor: [-3, -76] // popup should open relative to the iconAnchor
     });
 
-    // Add marker with the icon
-    // L.marker([48.8566, 2.3522], { icon: iconIp1 }).addTo(map)
-    //     .bindPopup("I am IP1 icon!")
-    //     .openPopup();
 
     /////////////////// ICON IP 2 /////////////////////////
 
@@ -37,150 +34,110 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    //////////////////// TENTATIVE WEBSOCKET //////////////////////
+    //////////////////// WEBSOCKET //////////////////////
 
 
     var markerIP1;
     var markerIP2;
 
     // Connexion WebSocket
-    const socket = new WebSocket('ws://localhost:8000/ws');
 
-    socket.onmessage = function(event) {
-        const lastMessage = JSON.parse(event.data);
-        console.log("Message reçu via WebSocket:", lastMessage);
 
-        if (lastMessage.IP == 1) {
-            if (markerIP1) {
-                markerIP1.remove();
-            }
-            markerIP1 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp1 }).addTo(map)
-                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-                .openPopup();
-        } else if (lastMessage.IP == 2) {
-            if (markerIP2) {
-                markerIP2.remove();
-            }
-            markerIP2 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp2 }).addTo(map)
-                .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-                .openPopup();
-        }
+    const socket = new WebSocket(`ws://${ip_broker}:8000/ws`);
+
+    socket.onopen = function(event) {
+        console.log("WebSocket is open now.");
     };
-
-    // Version avec des messages doubles
     socket.onmessage = function(event) {
         const lastMessageNewFormat = JSON.parse(event.data);
         console.log("Message reçu via WebSocket:", lastMessageNewFormat);
 
         if (lastMessageNewFormat) {
+
+            ///////////////////// MARKER 1 //////////////////////////
+
             if (markerIP1) {
-                markerIP1.remove();
+                markerIP1.remove(); // Supprime ancienne position pour mettre la nouvelle après 
             }
-            // on pourra mondifier le popup mais la ça sert a debug
-            markerIP1 = L.marker([lastMessageNewFormat.latitudeIP1, lastMessageNewFormat.longitudeIP1], { icon: iconIp1 }).addTo(map)
-                .bindPopup(`IP: ${lastMessageNewFormat.IP1}, Latitude: ${lastMessageNewFormat.latitudeIP1}, Longitude: ${lastMessageNewFormat.longitudeIP1}, Date: ${lastMessageNewFormat.messageDateIP1}`)
-                .openPopup();
+            if (lastMessageNewFormat.latitudeIP1 !== null) { 
+
+                // Affiche sur la map la derniere position de IP1
+                markerIP1 = L.marker([lastMessageNewFormat.latitudeIP1, lastMessageNewFormat.longitudeIP1], { icon: iconIp1 }).addTo(map)
+                    .bindPopup(`IP: ${lastMessageNewFormat.IP1}, Latitude: ${lastMessageNewFormat.latitudeIP1}, Longitude: ${lastMessageNewFormat.longitudeIP1}, Date: ${lastMessageNewFormat.messageDateIP1}`)
+                    .openPopup();
+                
+                // Affiche en dessous de la carte le dernier messageIP1
+                // Transforme la date en pour la rendre plus lisible
+                const dateObject1 = new Date(lastMessageNewFormat.messageDateIP1);
+                const readableDateIP1 = dateObject1.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                });
+                
+                // Tronque les nombres à virgule
+                const formattedLatitudeIP1 = formatCoordinate(lastMessageNewFormat.latitudeIP1, 5);
+                const formattedLongitudeIP1 = formatCoordinate(lastMessageNewFormat.longitudeIP1, 5);
+
+                const messageDiv1 = document.getElementById('messageIP1');
+                messageDiv1.innerHTML = `
+                    IP: ${lastMessageNewFormat.IP1},<br>
+                    Latitude: ${formattedLatitudeIP1},<br>
+                    Longitude: ${formattedLongitudeIP1},<br>
+                    Date: ${readableDateIP1}
+                `;            
+            }
+            ///////////////////// MARKER 2 //////////////////////////
 
             if (markerIP2) {
-                markerIP2.remove();
+                markerIP2.remove(); // Supprime ancienne position pour mettre la nouvelle après 
             }
-            markerIP2 = L.marker([lastMessageNewFormat.latitudeIP2, lastMessageNewFormat.longitudeIP2], { icon: iconIp2 }).addTo(map)
-                .bindPopup(`IP: ${lastMessageNewFormat.IP2}, Latitude: ${lastMessageNewFormat.latitudeIP2}, Longitude: ${lastMessageNewFormat.longitudeIP2}, Date: ${lastMessageNewFormat.messageDateIP2}`)
-                .openPopup();
+            // Affiche sur la map la derniere position de IP1
+            if (lastMessageNewFormat.latitudeIP2 !== null) { 
+                markerIP2 = L.marker([lastMessageNewFormat.latitudeIP2, lastMessageNewFormat.longitudeIP2], { icon: iconIp2 }).addTo(map)
+                    .bindPopup(`IP: ${lastMessageNewFormat.IP2}, Latitude: ${lastMessageNewFormat.latitudeIP2}, Longitude: ${lastMessageNewFormat.longitudeIP2}, Date: ${lastMessageNewFormat.messageDateIP2}`)
+                    .openPopup();
+                
+                // Affiche en dessous de la carte le dernier messageIP2
+                // Transforme la date en pour la rendre plus lisible
+                const dateObject2 = new Date(lastMessageNewFormat.messageDateIP2);
+
+                const readableDateIP2 = dateObject2.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                });
+
+                // Tronque les nombres à virgule
+                const formattedLatitudeIP2 = formatCoordinate(lastMessageNewFormat.latitudeIP2, 5);
+                const formattedLongitudeIP2 = formatCoordinate(lastMessageNewFormat.longitudeIP2, 5);
+            
+                const messageDiv2 = document.getElementById('messageIP2');
+                messageDiv2.innerHTML = `
+                    IP: ${lastMessageNewFormat.IP2},<br>
+                    Latitude: ${formattedLatitudeIP2},<br>
+                    Longitude: ${formattedLongitudeIP2},<br>
+                    Date: ${readableDateIP2}
+                `;              
+            }
         }
     };
-
     socket.onclose = function(event) {
         console.log("WebSocket fermé:", event);
     };
-
     socket.onerror = function(error) {
         console.error("WebSocket erreur:", error);
     };
 
-
-
-    /////////////////////// Tentative avec appel répété vers serveur ////////////// 
-
-    // // Go Axios psk j'aime pas fetch
-    // async function fetchLastMessageAxiosIP1() {
-    //     const response = await axios.get('http://localhost:8000/messages/IP1/last');
-    //     console.log(response);
-    //     console.log(response.data);
-    //     return response.data;
-    // }
-
-    // async function fetchLastMessageAxiosIP2() {
-    //     const response = await axios.get('http://localhost:8000/messages/IP2/last');
-    //     console.log(response);
-    //     console.log(response.data);
-    //     return response.data;
-    // }
-
-    // // Pour debug les msg
-    // async function printLastMessage() {
-    //     const lastMessage = await fetchLastMessageAxios();
-    //     if (lastMessage) {
-    //         console.log("Message trouvé:", lastMessage);
-    //         const messageDiv = document.getElementById('message');
-    //         messageDiv.innerHTML = `ID: ${lastMessage.id}, IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`;
-    //     } else {
-    //         console.log("Aucun message disponible.");
-    //     }
-    // }
-
-    // var markerIP1;
-    // // ajouter de la gestion d'erreur
-    // async function displayLastMessageIP1(){
-    //     const lastMessage = await fetchLastMessageAxiosIP1();
-    //     if (lastMessage) {
-    //         markerIP1 = L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp1 }).addTo(map)
-    //             .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-    //             .openPopup();
-    //     } else {
-    //         console.log("IP1 Aucun message.");
-    //     }
-    // }
-
-
-    // var markerIP2;
-    // // ajouter de la gestion d'erreur
-    // async function displayLastMessageIP2(){
-    //     const lastMessage = await fetchLastMessageAxiosIP2();
-    //     if (lastMessage) {
-    //         markerIP2 = new L.marker([lastMessage.latitude, lastMessage.longitude], { icon: iconIp2 }).addTo(map)
-    //             .bindPopup(`IP: ${lastMessage.IP}, Latitude: ${lastMessage.latitude}, Longitude: ${lastMessage.longitude}, Date: ${lastMessage.messageDate}`)
-    //             .openPopup();
-    //     } else {
-    //         console.log("IP2 Aucun message.");
-    //     }
-    // }
-
-    // printLastMessage();
-    // displayLastMessageIP1();
-    // displayLastMessageIP2();
-
-    // // setInterval(printLastMessage, 1000)
-    // setInterval(displayLastMessageIP1, 5000);
-    // setInterval(displayLastMessageIP2, 5000);
+    // Fontion pour tronquer les virgules
+    function formatCoordinate(coordinate, decimalPlaces = 5) {
+        return coordinate.toFixed(decimalPlaces);
+    }
 
 });
-
-
-//  TUTO WEBSOCKET
-// https://fastapi.tiangolo.com/advanced/websockets/#create-a-websocket
-
-// var ws = new WebSocket("ws://localhost:8000/ws");
-// ws.onmessage = function(event) {
-//     var messages = document.getElementById('messages')
-//     var message = document.createElement('li')
-//     var content = document.createTextNode(event.data)
-//     message.appendChild(content)
-//     messages.appendChild(message)
-// };
-// function sendMessage(event) {
-//     var input = document.getElementById("messageText")
-//     ws.send(input.value)
-//     input.value = ''
-//     event.preventDefault()
-// }

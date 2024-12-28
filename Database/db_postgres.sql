@@ -1,6 +1,6 @@
 CREATE TABLE Coordinates (
     id SERIAL PRIMARY KEY,
-    IP INT,
+    IP INTEGER,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     messageDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP

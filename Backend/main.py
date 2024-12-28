@@ -12,7 +12,7 @@ import time
 
 
 # Attend que le broker soit allumé
-time.sleep(6)
+time.sleep(20)
 
 # Configuration de base du logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

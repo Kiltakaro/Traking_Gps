@@ -3,9 +3,10 @@ from kafka.errors import KafkaError, KafkaTimeoutError # type: ignore
 import json
 import time
 import os
+import random
 
 # Initialiser le producer Kafka
-# Laisse le temps au broker de se setup
+# laisse le temps au broker de se setup
 print(f"Attend 12 secondes...")
 time.sleep(12)
 
@@ -26,12 +27,18 @@ except KafkaTimeoutError as e:
         time.sleep(10)  #
 
 try:
-    for i in range(25): 
-        message = {'IP': 2, 'latitude': 48.6566 + (i * 0.001), 'longitude': 2.3322 + (i * 0.001)}
+    lattitude = 48.8566
+    longitude = 2.3522
+    while True: 
+        i = random.randint(1, 10)
+        j = random.randint(1, 10)
+        lattitude = lattitude + (i * 0.003)
+        longitude = longitude + (j * 0.003)
+        message = {'IP': 1, 'latitude': lattitude, 'longitude': longitude}
         future = producer.send('coordinates_topic', value=message)
         result = future.get(timeout=25)  # Attendre que le message soit envoyé
         print(f"Message envoyé avec succès : {message}")
-        time.sleep(8)
+        time.sleep(4)
 
 except KafkaError as e:
     print(f"Une erreur est survenue : {e}")
